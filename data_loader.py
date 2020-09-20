@@ -1,12 +1,14 @@
-from __future__ import unicode_literals
+from __future__ import unicode_literals, print_function, division
 from io import open
 import unicodedata
 import string
 import re
+import random
 
 from language import Language
 
 PATH_TO_DATA = '../data/'
+MAX_LENGTH = 10
 
 def normalize_string(s):
     """
@@ -39,6 +41,8 @@ def read_languages(language1, language2, reverse=False):
         output_language (Language)
         pairs           (list)
     """
+
+    print("Reading lines...")
     
     lines = open(PATH_TO_DATA + '%s-%s.txt' % (language1, language2),
                  encoding='utf-8').read().strip().split('\n')
@@ -54,3 +58,31 @@ def read_languages(language1, language2, reverse=False):
         output_language = Language(language2)
     
     return input_language, output_language, pairs
+
+def filter_pairs(pairs):
+    """
+    Filters sentence pairs to only include those under MAX_LENGTH limit,
+    to reduce training time
+    """
+
+    def filter_pair(p):
+        """
+        Filters to include sentences that translate to the following forms
+        """
+        
+        eng_prefixes = (
+            "i am ", "i m ",
+            "he is", "he s ",
+            "she is", "she s ",
+            "you are", "you re ",
+            "we are", "we re ",
+            "they are", "they re "
+        )
+
+        return len(p[0].split(' ')) < MAX_LENGTH and \
+            len(p[1].split(' ')) < MAX_LENGTH and \
+            p[1].startswith(eng_prefixes)
+    
+    return [pair for pair in pairs if filter_pair(pair)]
+
+
