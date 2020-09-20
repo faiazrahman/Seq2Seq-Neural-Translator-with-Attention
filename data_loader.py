@@ -1,3 +1,7 @@
+"""
+Data loader for sentence pairs between two languages, with preprocessing
+"""
+
 from __future__ import unicode_literals, print_function, division
 from io import open
 import unicodedata
@@ -69,7 +73,7 @@ def filter_pairs(pairs):
         """
         Filters to include sentences that translate to the following forms
         """
-        
+
         eng_prefixes = (
             "i am ", "i m ",
             "he is", "he s ",
@@ -85,4 +89,24 @@ def filter_pairs(pairs):
     
     return [pair for pair in pairs if filter_pair(pair)]
 
+def prepare_data(language1, language2, reverse=False):
+    """
+    Prepares the data by splitting each line into sentence pairs 
+    from language1 to language2, normalizing text and filtering by
+    length and content, and then constructing Language classes' word2index
+    mappings
+    """
+    
+    input_language, output_language, pairs = read_languages(language1, language2, reverse)
+    print("Read %s sentence pairs" % len(pairs))
+    pairs = filter_pairs(pairs)
+    print("Trimmed to %s sentence pairs" % len(pairs))
 
+    print("Counting words...")
+    for pair in pairs:
+        input_language.add_sentence(pair[0])
+        output_language.add_sentence(pair[1])
+    print("Counted words:")
+    print(input_language.name, input_language.num_words)
+    print(output_language.name, output_language.num_words)
+    return input_language, output_language, pairs
