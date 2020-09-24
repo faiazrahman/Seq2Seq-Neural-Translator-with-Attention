@@ -1,5 +1,5 @@
 """
-Seq2Seq encoder-decoder neural network for machine translation.
+Seq2Seq encoder-decoder neural network for machine translation
 """
 
 import torch
@@ -85,6 +85,9 @@ class AttnDecoderRNN(nn.Module):
         self.out = nn.Linear(self.hidden_size, self.output_size)
 
     def forward(self, input, hidden, encoder_outputs):
+        """
+        Forward propagation
+        """
         embedded = self.embedding(input).view(1, 1, -1)
         embedded = self.dropout(embedded)
 
@@ -103,4 +106,7 @@ class AttnDecoderRNN(nn.Module):
         return output, hidden, attn_weights
 
     def initHidden(self):
+        """
+        Initializes hidden state
+        """
         return torch.zeros(1, 1, self.hidden_size, device=device)
