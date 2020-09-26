@@ -28,7 +28,7 @@ class EncoderRNN(nn.Module):
         output, hidden = self.gru(output, hidden)
         return output, hidden
 
-    def initHidden(self):
+    def init_hidden(self):
         """
         Initializes hidden state
         """
@@ -57,7 +57,7 @@ class DecoderRNN(nn.Module):
         output = self.softmax(self.out(output[0]))
         return output, hidden
 
-    def initHidden(self):
+    def init_hidden(self):
         """
         Initializes hidden state
         """
@@ -105,7 +105,7 @@ class AttnDecoderRNN(nn.Module):
         output = F.log_softmax(self.out(output[0]), dim=1)
         return output, hidden, attn_weights
 
-    def initHidden(self):
+    def init_hidden(self):
         """
         Initializes hidden state
         """
